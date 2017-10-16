@@ -17,6 +17,15 @@
 #include "Clawbot.h"
 //const int BASETIME = 305;
 
+								/*DISCRIPTION*/
+/*
+		This code is made to make the robot drive
+		with out crashing into anything to the best of it's abilitys.
+		It will use sonar to detect right and left distances
+		when scaning an imidit obstical to determen witch
+		way it can go for longer time
+*/
+
 void rotate(int g) //+ er klukkuhringur og - er ofugdur klukkuhringur
 {
 	SensorValue[IncoderR] = 0;
@@ -96,7 +105,7 @@ task main()
 				motor[RightMotor] = 0;
 				motor[LeftMotor]  = 0;
 			}
-		if(vexRT[Btn8D]==1)
+		if(vexRT[Btn8D]==1||Bumper==1)
 		{
 			keirla=false;
 		}
