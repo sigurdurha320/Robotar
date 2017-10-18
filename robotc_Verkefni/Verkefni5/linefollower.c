@@ -14,11 +14,12 @@
 #pragma config(Motor,  port9,           RightMotor,    tmotorVex393, openLoop)
 
 
-bool keyrsla = true;
 int RC;
 int CC;
 int LC;
-task main()
+
+
+task myMain()
 {
 	while(vexRT[Btn8L]==0){}//starts when a button is pressed
 
@@ -27,28 +28,28 @@ task main()
 				int R = 0;
 				int L = 0;
 
-	  	while(keyrsla)
+	  	while(true)
 			{
 				L=0;
 				R=0;
 				RC=SensorValue(RightLF);
 				CC=SensorValue(CenterLF);
 				LC=SensorValue(LeftLF);
-		    if(SensorValue(RightLF) < threshold)
+		    if(SensorValue(RightLF) > threshold)
 		    {
 		      // counter-steer right:
 		      L  	+= 30;
 		      R 	-= 30;
 		    }
 		    // CENTER sensor sees dark:
-		    if(SensorValue(CenterLF) < threshold)
+		    if(SensorValue(CenterLF) > threshold)
 		    {
 		      // go straight
 		      L  += 30;
 		      R  += 30;
 		    }
 		    // LEFT sensor sees dark:
-		    if(SensorValue(LeftLF) < threshold)
+		    if(SensorValue(LeftLF) > threshold)
 		    {
 		      // counter-steer left:
 		      L  	-= 30;
@@ -57,9 +58,14 @@ task main()
   			motor[LeftMotor]  = L;
 		    motor[RightMotor] = R;
 
-	if(vexRT[Btn8D]==1)
-		{
-			keyrsla=false;
-		}
 	}
 }
+task main()
+{
+	StartTask(myMain);//run the program
+
+	while(vexRT[Btn8D]!=true&&Bumper!=true){}//don't stop untill we say so
+
+	StopAllTasks();//stop everything!
+}
+
