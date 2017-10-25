@@ -92,7 +92,7 @@ task main()
 {
 	SensorValue(IncoderL)=0;
 	SensorValue(IncoderR)=0;
-	while(abs(key[0]-lock[0])>100 || abs(key[0]-lock[1])>100 || abs(key[0]-lock[2])>100 || abs(key[3]-lock[3])>200 || abs(key[4]-lock[4])>10 || abs(key[5]-lock[5])>200
+	while(abs(key[0]-lock[0])>100 || abs(key[1]-lock[1])>100 || abs(key[2]-lock[2])>100 || abs(key[3]-lock[3])>200 || abs(key[4]-lock[4])>10 || abs(key[5]-lock[5])>200
 		 || key[6] != lock[6] || abs(key[7]-lock[7])>20 || abs(key[8]-lock[8])>20)
 	{
 		key[0] =SensorValue(RightLF);//100
@@ -101,10 +101,9 @@ task main()
 		key[3] =SensorValue(LightSensor);//200
 		key[4] =SensorValue(Sonar);//10
 		key[5] =SensorValue(ArmStatus);//200
-		key[6] =SensorValue(Bumper);
-		key[7] =SensorValue(LimitSwitch);
-		key[8] =SensorValue(IncoderL);//20
-		key[9] =SensorValue(IncoderR);//20
+		key[6] =SensorValue(LimitSwitch);
+		key[7] =SensorValue(IncoderL);//20
+		key[8] =SensorValue(IncoderR);//20
 	}
 	motor[RightMotor]=20;
 	wait1Msec(300);
