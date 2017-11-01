@@ -7,6 +7,7 @@
 #define WIDTH_R 28
 #define W 36
 #define SENSOR_R 17
+#define SensorToClaw 6
 
 /*all names need to be uppercase
 	and need to be descriptive*/
