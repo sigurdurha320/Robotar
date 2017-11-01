@@ -15,12 +15,18 @@
 
 #include "Clawbot.h"
 
-int armstatusinn=SensorValue(ArmStatus);
-int son=SensorValue(Sonar);
 int RC;
 int CC;
 int LC;
 bool fin = false;
+bool nafn = false;
+
+task wait()
+{
+	wait1Msec(750);
+	nafn = true;
+}
+
 
 task phase1()
 {
@@ -31,7 +37,6 @@ task phase1()
 
 	while(true)
 	{
-		son=SensorValue(Sonar);
 		left=0;
 		right=0;
 		RC=SensorValue(RightLF);
@@ -47,8 +52,8 @@ task phase1()
     if(SensorValue(CenterLF) > threshold)
     {
       // go straight
-      left  += 30;
-      right  += 30;
+      left  += 40;
+      right  += 40;
     }
     // LEFT sensor sees dark:
     if(SensorValue(LeftLF) > threshold)
@@ -66,10 +71,7 @@ task phase2()
 {
 	motor[LeftMotor]  = 0;
   motor[RightMotor] = 0;
-	motor[Arm] = 30;
-	wait1Msec(500);
-	motor[Arm] = 0;
-	wait1Msec(1000);
+	wait1Msec(300);
 	motor[Claw] = -20;
 	wait1Msec(2000);
 	motor[Arm] = -90;
@@ -77,17 +79,17 @@ task phase2()
 	motor[Arm] =0;
 	//turn around
 	SensorValue[IncoderL] = 0;
-	while( SensorValue[IncoderL]<180*3.1731)
+	while( SensorValue[IncoderL]<215*3.1731)
 	{
 			motor[RightMotor] = -60;
-			motor[LeftMotor]  = +60;
+			motor[LeftMotor]  = +80;
 	}
 
 	int threshold = 1300;
 
 		int right = 0;
 	int left = 0;
-
+	StartTask(wait);
 	while(true)
 	{
 		left=0;
@@ -95,7 +97,7 @@ task phase2()
 		RC=SensorValue(RightLF);
 		CC=SensorValue(CenterLF);
 		LC=SensorValue(LeftLF);
-		if(RC<threshold&&CC<threshold&&LC<threshold)
+		if(RC<threshold&&CC<threshold&&LC<threshold&&nafn==true)
 		{
 			fin=true;
 		}
@@ -109,8 +111,8 @@ task phase2()
     if(SensorValue(CenterLF) > threshold)
     {
       // go straight
-      left  += 30;
-      right  += 30;
+      left  += 60;
+      right  += 60;
     }
     // LEFT sensor sees dark:
     if(SensorValue(LeftLF) > threshold)
@@ -127,18 +129,21 @@ task phase2()
 
 void DefaultSetting()
 {
-	motor[Claw] = -40;
-	wait1Msec(600);
+	nafn = false;
+	fin = false;
+	int armStada = 1350;
+	motor[Claw] = -20;
+	wait1Msec(700);
 	motor[Claw] = 0;
 	wait1Msec(1000);
 	motor[Claw] = 40;
 	wait1Msec(1000);
-	armstatusinn=SensorValue(ArmStatus);
-	while(abs(SensorValue(ArmStatus)-1500)>70)
+	motor[Claw] = 0;
+	while(abs(SensorValue(ArmStatus)-armStada)>70)
 	{
-		while(abs(SensorValue(ArmStatus)-1500)>70)
+		while(abs(SensorValue(ArmStatus)-armStada)>70)
 		{
-			if(SensorValue(ArmStatus)>1500)
+			if(SensorValue(ArmStatus)>armStada)
 			{
 				motor[Arm] = 90;
 			}
@@ -146,16 +151,14 @@ void DefaultSetting()
 			{
 				motor[Arm] = -90;
 			}
-			armstatusinn=SensorValue(ArmStatus);
 		}
 		motor[Arm]=0;
 		wait1Msec(2000);
 	}
 }
-task main()
-{
-	while(vexRT[Btn8L]==0){}//start
 
+void kerisla()
+{
 	DefaultSetting();
 
 //phase 1
@@ -173,9 +176,23 @@ task main()
 	StopTask(phase2);
 
 
-			motor[LeftMotor]  = 0;
-	    motor[RightMotor] = 0;
-	    motor[Claw] = 20;
-	    wait1Msec(100);
-	    motor[Claw] = 0;
+	motor[LeftMotor]  = 0;
+  motor[RightMotor] = 0;
+  motor[Claw] = 40;
+  wait1Msec(1000);
+  motor[Claw] = 0;
+}
+
+
+
+task main()
+{
+	while(vexRT[Btn8D]!=true&&Bumper!=true){
+		if(vexRT[Btn8L]==1)
+		{
+			kerisla();
+		}//start
+	}
+
+
 }
