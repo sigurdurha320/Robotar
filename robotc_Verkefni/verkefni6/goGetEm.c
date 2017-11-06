@@ -18,8 +18,8 @@
 int RC;
 int CC;
 int LC;
-bool fin = false;
 bool nafn = false;
+int threshold = 1300;
 
 task wait()
 {
@@ -27,15 +27,38 @@ task wait()
 	nafn = true;
 }
 
-
-task phase1()
+void search()
 {
-	int threshold = 1300;
+	SensorValue[IncoderL] = 0;
+	RC=SensorValue(RightLF);
+	CC=SensorValue(CenterLF);
+	LC=SensorValue(LeftLF);
+	while((threshold>RC&&threshold>CC&&threshold>LC)&&abs(SensorValue[IncoderL])<60*3.1731)
+	{
+		motor[LeftMotor]  = 50;
+    motor[RightMotor] = -50;
+		RC=SensorValue(RightLF);
+		CC=SensorValue(CenterLF);
+		LC=SensorValue(LeftLF);
+	}
+	SensorValue[IncoderL] = 0;
+	while((threshold>RC&&threshold>CC&&threshold>LC)&&abs(SensorValue[IncoderL])<120*3.1731)
+	{
+		motor[LeftMotor]  = -50;
+    motor[RightMotor] = 50;
+		RC=SensorValue(RightLF);
+		CC=SensorValue(CenterLF);
+		LC=SensorValue(LeftLF);
+	}
+		motor[LeftMotor]  = 0;
+    motor[RightMotor] = 0;
+}
 
+void phase1()
+{
 	int right = 0;
 	int left = 0;
-
-	while(true)
+	while(SensorValue(Sonar)>SensorToClaw||SensorValue(Sonar)==-1)
 	{
 		left=0;
 		right=0;
@@ -65,9 +88,13 @@ task phase1()
 		motor[LeftMotor]  = left;
     motor[RightMotor] = right;
 
+    if(RC>threshold||CC>threshold||LC>threshold||nafn==false)
+    {
+    	search();
+    }
 	}
 }
-task phase2()
+void phase2()
 {
 	motor[LeftMotor]  = 0;
   motor[RightMotor] = 0;
@@ -90,17 +117,13 @@ task phase2()
 		int right = 0;
 	int left = 0;
 	StartTask(wait);
-	while(true)
+	do
 	{
 		left=0;
 		right=0;
 		RC=SensorValue(RightLF);
 		CC=SensorValue(CenterLF);
 		LC=SensorValue(LeftLF);
-		if(RC<threshold&&CC<threshold&&LC<threshold&&nafn==true)
-		{
-			fin=true;
-		}
     if(SensorValue(RightLF) > threshold)
     {
       // counter-steer right:
@@ -123,14 +146,29 @@ task phase2()
     }
 		motor[LeftMotor]  = left;
     motor[RightMotor] = right;
+    if(RC>threshold||CC>threshold||LC>threshold||nafn==false)
+    {
+    	search();
+    }
 
-	}
+	}while(RC>threshold||CC>threshold||LC>threshold||nafn==false);
+
+	SensorValue[IncoderL] = 0;
+	while(abs(SensorValue[IncoderL])<60*3.1731)
+	{
+		motor[LeftMotor]  = 50;
+    motor[RightMotor] = -50;
+  }
+	motor[LeftMotor]  = 0;
+  motor[RightMotor] = 0;
+  motor[Claw] = 40;
+  wait1Msec(1000);
+  motor[Claw] = 0;
 }
 
 void DefaultSetting()
 {
 	nafn = false;
-	fin = false;
 	int armStada = 1350;
 	motor[Claw] = -20;
 	wait1Msec(700);
@@ -153,34 +191,19 @@ void DefaultSetting()
 			}
 		}
 		motor[Arm]=0;
-		wait1Msec(2000);
+		wait1Msec(500);
 	}
 }
 
-void kerisla()
+task kerisla()
 {
 	DefaultSetting();
 
 //phase 1
-	StartTask(phase1);
-
-	while((vexRT[Btn8D]!=true&&Bumper!=true) && (SensorValue(Sonar)>SensorToClaw||SensorValue(Sonar)==-1)){}
-
-	StopTask(phase1);
+	phase1();
 
 //phase 2
-	StartTask(phase2);
-
-	while((vexRT[Btn8D]!=true&&Bumper!=true) && fin==false){}
-
-	StopTask(phase2);
-
-
-	motor[LeftMotor]  = 0;
-  motor[RightMotor] = 0;
-  motor[Claw] = 40;
-  wait1Msec(1000);
-  motor[Claw] = 0;
+  phase2();
 }
 
 
@@ -190,7 +213,7 @@ task main()
 	while(vexRT[Btn8D]!=true&&Bumper!=true){
 		if(vexRT[Btn8L]==1)
 		{
-			kerisla();
+			StartTask(kerisla);
 		}//start
 	}
 
