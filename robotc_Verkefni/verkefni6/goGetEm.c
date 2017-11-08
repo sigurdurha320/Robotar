@@ -20,47 +20,15 @@ int CC;
 int LC;
 bool nafn = false;
 int threshold = 1300;
+int waitTime = 750;
+bool isRunningWait=false;
 
 task wait()
 {
-	wait1Msec(750);
+	isRunningWait=true;
+	wait1Msec(waitTime);
 	nafn = true;
 }
-/*
-void search()
-{
-	RC=SensorValue(RightLF);
-	CC=SensorValue(CenterLF);
-	LC=SensorValue(LeftLF);
-
-	while((threshold>RC&&threshold>CC&&threshold>LC))
-	{
-		SensorValue[IncoderL] = 0;
-		while((threshold>RC&&threshold>CC&&threshold>LC)&&abs(SensorValue[IncoderL])<60*3.1731)
-		{
-			motor[LeftMotor]  = 40;
-	    motor[RightMotor] = -40;
-			RC=SensorValue(RightLF);
-			CC=SensorValue(CenterLF);
-			LC=SensorValue(LeftLF);
-		}
-		motor[LeftMotor]  = 0;
-	  motor[RightMotor] = 0;
-
-		SensorValue[IncoderL] = 0;
-		while((threshold>RC&&threshold>CC&&threshold>LC)&&abs(SensorValue[IncoderL])<120*3.1731)
-		{
-			motor[LeftMotor]  = -40;
-	    motor[RightMotor] = 40;
-			RC=SensorValue(RightLF);
-			CC=SensorValue(CenterLF);
-			LC=SensorValue(LeftLF);
-		}
-		motor[LeftMotor]  = 0;
-    motor[RightMotor] = 0;
-    nafn=false;
-	}
-}*/
 
 void phase1()
 {
@@ -102,11 +70,6 @@ void phase1()
 
 		motor[LeftMotor]  = left;
     motor[RightMotor] = right;
-
-    if(RC>threshold||CC>threshold||LC>threshold||nafn==false)
-    {
-    	search();
-    }
 	}
 }
 void phase2()
@@ -120,60 +83,70 @@ void phase2()
 	while(SensorValue(ArmStatus)<2000){}
 	motor[Arm] =0;
 	//turn around
-	SensorValue[IncoderL] = 0;
-	while( SensorValue[IncoderL]<215*3.1731)
-	{
-			motor[RightMotor] = -60;
-			motor[LeftMotor]  = +80;
-	}
 
 	int threshold = 1300;
-
-		int right = 0;
-	int left = 0;
 	StartTask(wait);
-	do
+	while(RC<threshold&&CC<threshold&&LC<threshold||nafn==false)
+	{
+		RC=SensorValue(RightLF);
+		CC=SensorValue(CenterLF);
+		LC=SensorValue(LeftLF);
+			motor[RightMotor] = -60;
+			motor[LeftMotor]  = +60;
+	}
+
+
+
+	int right = 0;
+	int left = 0;
+	nafn = false;
+	waitTime=1000;
+	while((RC>threshold||CC>threshold||LC>threshold)||nafn==false)
 	{
 		left=0;
 		right=0;
 		RC=SensorValue(RightLF);
 		CC=SensorValue(CenterLF);
 		LC=SensorValue(LeftLF);
-    if(SensorValue(RightLF) > threshold)
+    if(RC > threshold)
     {
       // counter-steer right:
       left  	+= 30;
       right 	-= 30;
     }
     // CENTER sensor sees dark:
-    if(SensorValue(CenterLF) > threshold)
+    if(CC > threshold)
     {
       // go straight
-      left  += 60;
-      right  += 60;
+      left   += 10;
+      right  += 10;
     }
     // LEFT sensor sees dark:
-    if(SensorValue(LeftLF) > threshold)
+    if(LC > threshold)
     {
       // counter-steer left:
       left  	-= 30;
       right 	+= 30;
     }
+    if(SensorValue(LeftLF) < threshold&&SensorValue(CenterLF) > threshold&&SensorValue(RightLF) < threshold)
+    {
+      // go straight
+      left   += 30;
+      right  += 30;
+    }
 		motor[LeftMotor]  = left;
     motor[RightMotor] = right;
-    if(RC>threshold||CC>threshold||LC>threshold||nafn==false)
-    {
-    	search();
-    }
-
-	}while(RC>threshold||CC>threshold||LC>threshold||nafn==false);
-
-	SensorValue[IncoderL] = 0;
-	while(abs(SensorValue[IncoderL])<60*3.1731)
-	{
-		motor[LeftMotor]  = 50;
-    motor[RightMotor] = -50;
-  }
+		if((RC<threshold&&CC<threshold&&LC<threshold)&&isRunningWait==false)
+		{
+			StartTask(wait);
+		}
+		else if(isRunningWait==true)
+		{
+			StopTask(wait);
+			nafn=false;
+			isRunningWait=false;
+		}
+	}
 	motor[LeftMotor]  = 0;
   motor[RightMotor] = 0;
   motor[Claw] = 40;
@@ -184,6 +157,7 @@ void phase2()
 void DefaultSetting()
 {
 	nafn = false;
+	waitTime=750;
 	int armStada = 1350;
 	motor[Claw] = -20;
 	wait1Msec(700);
