@@ -26,33 +26,41 @@ task wait()
 	wait1Msec(750);
 	nafn = true;
 }
-
+/*
 void search()
 {
-	SensorValue[IncoderL] = 0;
 	RC=SensorValue(RightLF);
 	CC=SensorValue(CenterLF);
 	LC=SensorValue(LeftLF);
-	while((threshold>RC&&threshold>CC&&threshold>LC)&&abs(SensorValue[IncoderL])<60*3.1731)
+
+	while((threshold>RC&&threshold>CC&&threshold>LC))
 	{
-		motor[LeftMotor]  = 50;
-    motor[RightMotor] = -50;
-		RC=SensorValue(RightLF);
-		CC=SensorValue(CenterLF);
-		LC=SensorValue(LeftLF);
-	}
-	SensorValue[IncoderL] = 0;
-	while((threshold>RC&&threshold>CC&&threshold>LC)&&abs(SensorValue[IncoderL])<120*3.1731)
-	{
-		motor[LeftMotor]  = -50;
-    motor[RightMotor] = 50;
-		RC=SensorValue(RightLF);
-		CC=SensorValue(CenterLF);
-		LC=SensorValue(LeftLF);
-	}
+		SensorValue[IncoderL] = 0;
+		while((threshold>RC&&threshold>CC&&threshold>LC)&&abs(SensorValue[IncoderL])<60*3.1731)
+		{
+			motor[LeftMotor]  = 40;
+	    motor[RightMotor] = -40;
+			RC=SensorValue(RightLF);
+			CC=SensorValue(CenterLF);
+			LC=SensorValue(LeftLF);
+		}
+		motor[LeftMotor]  = 0;
+	  motor[RightMotor] = 0;
+
+		SensorValue[IncoderL] = 0;
+		while((threshold>RC&&threshold>CC&&threshold>LC)&&abs(SensorValue[IncoderL])<120*3.1731)
+		{
+			motor[LeftMotor]  = -40;
+	    motor[RightMotor] = 40;
+			RC=SensorValue(RightLF);
+			CC=SensorValue(CenterLF);
+			LC=SensorValue(LeftLF);
+		}
 		motor[LeftMotor]  = 0;
     motor[RightMotor] = 0;
-}
+    nafn=false;
+	}
+}*/
 
 void phase1()
 {
@@ -75,8 +83,8 @@ void phase1()
     if(SensorValue(CenterLF) > threshold)
     {
       // go straight
-      left  += 40;
-      right  += 40;
+      left  += 10;
+      right  += 10;
     }
     // LEFT sensor sees dark:
     if(SensorValue(LeftLF) > threshold)
@@ -85,6 +93,13 @@ void phase1()
       left  	-= 30;
       right 	+= 30;
     }
+    if(SensorValue(LeftLF) < threshold&&SensorValue(CenterLF) > threshold&&SensorValue(RightLF) < threshold)
+    {
+      // go straight
+      left  += 30;
+      right  += 30;
+    }
+
 		motor[LeftMotor]  = left;
     motor[RightMotor] = right;
 
