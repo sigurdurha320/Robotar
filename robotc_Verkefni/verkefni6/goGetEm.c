@@ -140,7 +140,7 @@ void phase2()
 		{
 			StartTask(wait);
 		}
-		else if(isRunningWait==true)
+		else if((RC>threshold||CC>threshold||LC>threshold)&&isRunningWait==true)
 		{
 			StopTask(wait);
 			nafn=false;
@@ -156,9 +156,10 @@ void phase2()
 
 void DefaultSetting()
 {
+	isRunningWait=false;
 	nafn = false;
 	waitTime=750;
-	int armStada = 1350;
+	int armStada = 1400;
 	motor[Claw] = -20;
 	wait1Msec(700);
 	motor[Claw] = 0;
@@ -166,9 +167,9 @@ void DefaultSetting()
 	motor[Claw] = 40;
 	wait1Msec(1000);
 	motor[Claw] = 0;
-	while(abs(SensorValue(ArmStatus)-armStada)>70)
+	while(abs(SensorValue(ArmStatus)-armStada)>100)
 	{
-		while(abs(SensorValue(ArmStatus)-armStada)>70)
+		while(abs(SensorValue(ArmStatus)-armStada)>100)
 		{
 			if(SensorValue(ArmStatus)>armStada)
 			{
