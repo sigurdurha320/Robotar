@@ -59,8 +59,7 @@ void turn_giro(int degrees10,bool counterclock){
 		motor[RightMotor] = -70*SlowDown;
 		motor[LeftMotor] = 70*SlowDown;
 		}
-		last = abs(SensorValue[gyro]);
-		if (last>abs(SensorValue[gyro]))
+		if (last<abs(SensorValue[gyro]))
 		{
 				cirlces+=3600;
 		}
