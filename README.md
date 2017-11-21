@@ -16,3 +16,4 @@ verkefni 3: https://www.youtube.com/watch?v=w1Xr1dsjqP4
 * hafa ekkert fyrir miðju línu-skinjaronum
 * hafa ekkert fyrir vinstri línu-skinjaronum
 * setja einhvern hlut 20 cm fyrir framan robotinn
+# eins og er sínt hér: https://www.youtube.com/watch?v=3lejZcAgG88&feature=youtu.be
