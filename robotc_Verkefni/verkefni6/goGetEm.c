@@ -13,6 +13,12 @@
 #pragma config(Motor,  port8,           Arm,           tmotorVex269, openLoop)
 #pragma config(Motor,  port9,           RightMotor,    tmotorVex393, openLoop)
 
+/*
+This program instructs the robot to follow a line untill it finds a hindurence// (preferably a small silinder object that it can pick up with it's claw.
+once the object has(or has not) been picked up the robot will preside to turn around and refind the line and follow it back.
+once the robot has reached the end of the line it shal drop the object and stop the code.
+*/
+
 #include "Clawbot.h"
 
 int RC;

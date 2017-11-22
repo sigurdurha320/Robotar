@@ -12,7 +12,13 @@
 #pragma config(Motor,  port7,           Claw,          tmotorVex269, openLoop)
 #pragma config(Motor,  port8,           Arm,           tmotorVex269, openLoop)
 #pragma config(Motor,  port9,           RightMotor,    tmotorVex393, openLoop)
-
+/*
+This program instructs the robot to follow a line using three sensors located on the front, bottom of the robot.
+A few thing to note are:
+The robot can follow curving lines
+The robot can not follow a line that has a sharp angle
+The robot can only follow one line at a time, diverging paths are of questionable difficulty.
+*/
 
 int RC;
 int CC;
@@ -68,4 +74,3 @@ task main()
 
 	StopAllTasks();//stop everything!
 }
-

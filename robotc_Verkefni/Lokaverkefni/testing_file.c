@@ -36,7 +36,7 @@ float motors[]={0,0};*/
 void turn_giro(int degrees10,bool counterclock){
 	//Completely clear out any previous sensor readings by setting the port to "sensorNone"
 	int last = -10;
-	int cirlces = 0;
+	int setSpeed = 50;
 	goal=degrees10;
 	SensorType[gyro] = sensorNone;
   wait1Msec(1000);
@@ -44,24 +44,20 @@ void turn_giro(int degrees10,bool counterclock){
   //Reconfigure Analog Port 7 as a Gyro sensor and allow time for ROBOTC to calibrate it
   SensorType[gyro] = sensorGyro;
   wait1Msec(2000);
-  while(abs(SensorValue[gyro])+cirlces < degrees10)
+  while(abs(SensorValue[gyro]) < degrees10)
   {
-  	gildi = abs(SensorValue[gyro])+cirlces;
-  	if(degrees10<abs(SensorValue[gyro])+cirlces+100)
+  	gildi = abs(SensorValue[gyro]);
+  	if(degrees10<abs(SensorValue[gyro])+100)
   	{
-  		SlowDown = 0.5;
+  		SlowDown = 0.75;
   	}
 		if (counterclock){
-		motor[RightMotor] = 70*SlowDown;
-		motor[LeftMotor] = -70*SlowDown;
+		motor[RightMotor] = setSpeed*SlowDown;
+		motor[LeftMotor] = -setSpeed*SlowDown;
 		}
 		else{
-		motor[RightMotor] = -70*SlowDown;
-		motor[LeftMotor] = 70*SlowDown;
-		}
-		if (last<abs(SensorValue[gyro]))
-		{
-				cirlces+=3600;
+		motor[RightMotor] = -setSpeed*SlowDown;
+		motor[LeftMotor] = setSpeed*SlowDown;
 		}
   }
   motor[RightMotor] = 0;
@@ -71,7 +67,5 @@ void turn_giro(int degrees10,bool counterclock){
 
 task main()
 {
-	turn_giro(1800,true);
 	turn_giro(1800,false);
-	turn_giro(3600,true);
 }
