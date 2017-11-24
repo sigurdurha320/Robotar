@@ -1,11 +1,3 @@
-# Robotar
-Verkefni með róbóta
-
-
-verkefni 3: https://www.youtube.com/watch?v=w1Xr1dsjqP4
-
-
-
 # randomStuff VEF3B
 ## Robotinn er læstur þangað til að robotinn er kominn í stöðu sem settur alla sensor'anna í rétt gildi til að aflæsa robotinn miðað við frumstiltum lykil.
 ## lykilling fyrir þetta dæmi er:
@@ -17,3 +9,4 @@ verkefni 3: https://www.youtube.com/watch?v=w1Xr1dsjqP4
 * hafa ekkert fyrir vinstri línu-skinjaronum
 * setja einhvern hlut 20 cm fyrir framan robotinn
 # eins og er sýnt hér: https://www.youtube.com/watch?v=3lejZcAgG88&feature=youtu.be
+Notkun á fjarstírða kóðanum (sem er keyrður þegar robotinn er aflæstur: https://www.youtube.com/watch?v=w1Xr1dsjqP4
