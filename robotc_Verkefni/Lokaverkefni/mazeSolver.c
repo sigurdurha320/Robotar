@@ -127,7 +127,25 @@ run the string;*/
 */
 void setLogicGate()
 {
-
+	short gate = 0;
+	if(values[0]>50)//if it's open "up"
+	{
+		gate=8
+	}
+	if(values[1]>50)//if it's open "right"
+	{
+		gate=gate+4;
+	}
+	if(values[2]>50)//if it's open "down"
+	{
+		gate=gate+2;
+	}
+	if(values[3]>50)//if it's open "left"
+	{
+		gate=gate+1;
+	}
+	maze[x][y]=gate;//(must keep track on x and y)
+	//turn_giro(?)
 }
 void navigate()
 {
