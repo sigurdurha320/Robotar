@@ -39,6 +39,18 @@ bool logicGates[16][4]=
 		{1,1,1,0},
 		{1,1,1,1}
 	};
+
+short sum(short pk)
+{
+	short combined =0;
+	for(int i = 0;i<4;i++)
+	{
+		combined += logicGates[pk][i];
+	}
+	return combined;
+}
+
+short kek = sum(2);
 short maze[8][8];
 
 	//logicGate[maze[x][y]];//how to reference a logic gate
@@ -81,7 +93,7 @@ maze[x][y]=meh;//(must keep track on x and y
 	while where he is sum of open gates<2
 	go back(to the open side
 	close the open gate in the logic gate
-/*
+*/
 
 
 task main()
