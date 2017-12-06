@@ -13,7 +13,7 @@
 #pragma config(Motor,  port7,           Claw,          tmotorVex269, openLoop)
 #pragma config(Motor,  port8,           Arm,           tmotorVex269, openLoop)
 #pragma config(Motor,  port9,           RightMotor,    tmotorVex393, openLoop)
-
+#include "Clawbot.h"
 /*
 The robot is programmed to solve a maze, it will drive forward until there is a hinderence,
 then it will turn 90 degrees in a random direction, right or left.
@@ -22,6 +22,7 @@ the way he came and proceed to take paths he has not taken before until he has s
 */
 int x=0;
 int y=0;
+int trackSize = 80;
 bool logicGates[16][4]=
 	{
 		{0,0,0,0},
@@ -159,6 +160,34 @@ void rotate(int g)
   	motor[RightMotor] = right*(SensorValue[gyro]-g)/abs(SensorValue[gyro]-g)*slow;
 		motor[LeftMotor]  = left*(g-SensorValue[gyro])/abs(g-SensorValue[gyro])*slow;
   }
+}
+
+void drive(int k)//distance in cm
+{
+	SensorValue[IncoderR] = 0;
+  SensorValue[IncoderL] = 0;
+	while(k/U > SensorValue[IncoderR]/360 && k/U > SensorValue[IncoderL]/360)
+	{
+		if(abs(SensorValue[IncoderR]) == abs(SensorValue[IncoderL])) // If rightEncoder has counted the same amount as leftEncoder:
+		{
+			// Move Forward
+			motor[RightMotor] = 80;		    // Right Motor is run at power level 80
+			motor[LeftMotor]  = 80;		    // Left Motor is run at power level 80
+		}
+		else if(abs(SensorValue[IncoderR]) > abs(SensorValue[IncoderL]))	// If rightEncoder has counted more encoder counts
+		{
+			// Turn slightly right
+			motor[RightMotor] = 60;		    // Right Motor is run at power level 60
+			motor[LeftMotor]  = 80;		    // Left Motor is run at power level 80
+		}
+		else	// Only runs if leftEncoder has counted more encoder counts
+		{
+			// Turn slightly left
+			motor[RightMotor] = 80;		    // Right Motor is run at power level 80
+			motor[LeftMotor]  = 60;		    // Left Motor is run at power level 60
+		}
+	}
+}
 
 void setLogicGate()
 {
@@ -191,7 +220,12 @@ void setLogicGate()
 }
 void navigate()
 {
-
+	char * path = nextNull("");
+	for(int i = 0; i<strlen(path);i++)
+	{
+		rotate(900*path[i];
+		drive(trackSize);
+	}
 }
 char * nextNull(char * rout)//"012103"
 {
@@ -229,7 +263,7 @@ char * nextNull(char * rout)//"012103"
 		{
 			if(logicGates[maze[tempX][tempY]][i]==1 && rout[strlen(rout)-1]!=restrictor[i])
 			{
-				swap = nextNull(rout+i);//<-?
+				swap = nextNull(snprintf(rout,i));//<-?
 				if(shortestPath=="")
 				{
 					shortestPath=swap;
@@ -252,8 +286,6 @@ task solveMaze()
 			navigate();
 		}
 }
-
-
 task main()
 {
 	SensorType[gyro] = sensorNone;
