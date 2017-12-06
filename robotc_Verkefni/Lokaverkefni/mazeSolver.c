@@ -159,7 +159,7 @@ void rotate(int g)
   	motor[RightMotor] = right*(SensorValue[gyro]-g)/abs(SensorValue[gyro]-g)*slow;
 		motor[LeftMotor]  = left*(g-SensorValue[gyro])/abs(g-SensorValue[gyro])*slow;
   }
-
+}
 void setLogicGate()
 {
 	float values[4] = {0,0,0,0};
@@ -252,7 +252,41 @@ task solveMaze()
 			navigate();
 		}
 }
-
+task closeOffDeadEnds()
+{
+	while(true)
+	{
+		for(int xCord=0;xCord<sizeof(maze);xCord++)
+		{
+			for(int yCord=0;yCord<sizeof(maze[0]);yCord++)
+			{
+				if(xCord!=x&&yCord!=y)
+				{
+					if(logicGates[maze[xCord][yCord]]==1)
+					{
+						maze[xCord][yCord]=0;
+						maze[xCord-1][yCord]=	maze[xCord-1][yCord]-4;
+					}
+					else if(logicGates[maze[xCord][yCord]]==2)
+					{
+						maze[xCord][yCord]=0;
+						maze[xCord][yCord+1]=	maze[xCord][yCord+1]-8;
+					}
+					else if(logicGates[maze[xCord][yCord]]==4)
+					{
+						maze[xCord][yCord]=0;
+						maze[xCord+1][yCord]=	maze[xCord+1][yCord]-1;
+					}
+					else if (logicGates[maze[xCord][yCord]]==8)
+					{
+						maze[xCord][yCord]=0;
+						maze[xCord][yCord-1]=	maze[xCord-1][yCord]-2;
+					}
+				}
+			}
+		}
+	}
+}
 
 task main()
 {
@@ -263,4 +297,5 @@ task main()
 
 	StartTask(solveMaze);
 	while(vexRT[Btn8D]!=true&&Bumper!=true){}
+	StopAllTasks();
 }
