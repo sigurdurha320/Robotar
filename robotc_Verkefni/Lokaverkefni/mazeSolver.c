@@ -3,6 +3,7 @@
 #pragma config(Sensor, in3,    LeftLF,         sensorLineFollower)
 #pragma config(Sensor, in4,    LightSensor,    sensorReflection)
 #pragma config(Sensor, in5,    ArmStatus,      sensorPotentiometer)
+#pragma config(Sensor, in7,    gyro,           sensorGyro)
 #pragma config(Sensor, dgtl4,  Bumper,         sensorTouch)
 #pragma config(Sensor, dgtl5,  LimitSwitch,    sensorTouch)
 #pragma config(Sensor, dgtl7,  Sonar,          sensorSONAR_cm)
@@ -50,7 +51,7 @@ short sum(short pk)
 	}
 	return combined;
 }
-string min(string kr, string sw)
+char * min(string kr, string sw)
 {
 	if(sizeof(kr)>sizeof(sw))
 	{
@@ -151,7 +152,7 @@ void navigate()
 {
 
 }
-string nextNull(string rout)//"012103"
+char * nextNull(char * rout)//"012103"
 {
 	int tempX=x;//x cord for instance
 	int tempY=y;//y cord for instance
@@ -176,18 +177,18 @@ string nextNull(string rout)//"012103"
 			tempX-=1;
 		}
 	}
-	if(maze[tempX][tempY]==null)
+	if(maze[tempX][tempY]==NULL)
 	{
 		return rout;
 	}
 	else
 	{
-		int restrictor[]={2,3,0,1};
+		int restrictor[4]={2,3,0,1};
 		for(int i = 0; i<4;i++)
 		{
-			if(logicGates[maze[tempX][tempY]][i]==1 && rout[sizeof(rout)-1)]!=restrictor[i])
+			if(logicGates[maze[tempX][tempY]][i]==1 && rout[strlen(rout)-1]!=restrictor[i])
 			{
-				swap = nextNull(sprintf(rout,i));
+				swap = nextNull(rout+i);//<-?
 				if(shortestPath=="")
 				{
 					shortestPath=swap;
@@ -198,7 +199,7 @@ string nextNull(string rout)//"012103"
 				}
 			}
 		}
-		return shortestPath
+		return shortestPath;
 	}
 }
 
