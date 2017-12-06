@@ -126,8 +126,50 @@ run the string;*/
 	go back(to the open side
 	close the open gate in the logic gate
 */
+void rotate(int g)
+{
+	//null stilla incoderana
+	SensorValue[IncoderR] = 0;
+  SensorValue[IncoderL] = 0;
+  int right =0;
+  int left =0;
+  float slow = 1;
+  while(SensorValue[gyro]-g < 5)
+  {
+  	if(abs(SensorValue[IncoderR])>abs(SensorValue[IncoderL]))
+  	{
+  		left = 50;
+  		right = 40;
+  	}
+  	else if (abs(SensorValue[IncoderR])<abs(SensorValue[IncoderL]))
+  	{
+  		left = 40;
+  		right = 50;
+  	}
+  	else
+  	{
+  		left = 45;
+  		right = 45;
+  	}
+  	if(SensorValue[gyro]-g < 50)
+  	{
+  		slow= 0.5;
+  	}
+
+  	motor[RightMotor] = right*(SensorValue[gyro]-g)/abs(SensorValue[gyro]-g)*slow;
+		motor[LeftMotor]  = left*(g-SensorValue[gyro])/abs(g-SensorValue[gyro])*slow;
+  }
+
 void setLogicGate()
 {
+	float values[4] = {0,0,0,0};
+	int i;
+	for(i=0; i<4; i++){
+		rotate(900*i);
+		values[i] =	SensorValue(Sonar);
+		wait1Msec(750);
+	}
+
 	short gate = 0;
 	if(values[0]>50)//if it's open "up"
 	{
@@ -146,7 +188,6 @@ void setLogicGate()
 		gate=gate+1;
 	}
 	maze[x][y]=gate;//(must keep track on x and y)
-	//turn_giro(?)
 }
 void navigate()
 {
