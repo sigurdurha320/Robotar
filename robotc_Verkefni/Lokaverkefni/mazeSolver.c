@@ -161,7 +161,6 @@ void rotate(int g)
 		motor[LeftMotor]  = left*(g-SensorValue[gyro])/abs(g-SensorValue[gyro])*slow;
   }
 }
-
 void drive(int k)//distance in cm
 {
 	SensorValue[IncoderR] = 0;
@@ -188,7 +187,6 @@ void drive(int k)//distance in cm
 		}
 	}
 }
-
 void setLogicGate()
 {
 	float values[4] = {0,0,0,0};
@@ -263,7 +261,7 @@ char * nextNull(char * rout)//"012103"
 		{
 			if(logicGates[maze[tempX][tempY]][i]==1 && rout[strlen(rout)-1]!=restrictor[i])
 			{
-				swap = nextNull(snprintf(rout,i));//<-?
+				swap = nextNull(snprintf(rout,sizeof(rout),i));//<-?
 				if(shortestPath=="")
 				{
 					shortestPath=swap;
@@ -286,6 +284,42 @@ task solveMaze()
 			navigate();
 		}
 }
+task closeOffDeadEnds()
+{
+	while(true)
+	{
+		for(int xCord=0;xCord<sizeof(maze);xCord++)
+		{
+			for(int yCord=0;yCord<sizeof(maze[0]);yCord++)
+			{
+				if(xCord!=x&&yCord!=y)
+				{
+					if(logicGates[maze[xCord][yCord]]==1)
+					{
+						maze[xCord][yCord]=0;
+						maze[xCord-1][yCord]=	maze[xCord-1][yCord]-4;
+					}
+					else if(logicGates[maze[xCord][yCord]]==2)
+					{
+						maze[xCord][yCord]=0;
+						maze[xCord][yCord+1]=	maze[xCord][yCord+1]-8;
+					}
+					else if(logicGates[maze[xCord][yCord]]==4)
+					{
+						maze[xCord][yCord]=0;
+						maze[xCord+1][yCord]=	maze[xCord+1][yCord]-1;
+					}
+					else if (logicGates[maze[xCord][yCord]]==8)
+					{
+						maze[xCord][yCord]=0;
+						maze[xCord][yCord-1]=	maze[xCord-1][yCord]-2;
+					}
+				}
+			}
+		}
+	}
+}
+
 task main()
 {
 	SensorType[gyro] = sensorNone;
@@ -295,4 +329,5 @@ task main()
 
 	StartTask(solveMaze);
 	while(vexRT[Btn8D]!=true&&Bumper!=true){}
+	StopAllTasks();
 }
