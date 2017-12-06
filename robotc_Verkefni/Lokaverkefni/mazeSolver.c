@@ -216,15 +216,7 @@ void setLogicGate()
 	}
 	maze[x][y]=gate;//(must keep track on x and y)
 }
-void navigate()
-{
-	char * path = nextNull("");
-	for(int i = 0; i<strlen(path);i++)
-	{
-		rotate(900*path[i];
-		drive(trackSize);
-	}
-}
+
 char * nextNull(char * rout)//"012103"
 {
 	int tempX=x;//x cord for instance
@@ -259,23 +251,49 @@ char * nextNull(char * rout)//"012103"
 		int restrictor[4]={2,3,0,1};
 		for(int i = 0; i<4;i++)
 		{
-			if(logicGates[maze[tempX][tempY]][i]==1 && rout[strlen(rout)-1]!=restrictor[i])
+			if(sizeof(rout)>0)//need to watch out for the functions first run
 			{
-				swap = nextNull(snprintf(rout,sizeof(rout),i));//<-?
-				if(shortestPath=="")
+				if(logicGates[maze[tempX][tempY]][i]==1 && rout[strlen(rout)-1]!=restrictor[i])
 				{
-					shortestPath=swap;
+					swap = nextNull(snprintf(rout,sizeof(rout),i));//<-?
+					if(shortestPath=="")
+					{
+						shortestPath=swap;
+					}
+					else
+					{
+						shortestPath=min(shortestPath,swap);
+					}
 				}
-				else
+			}
+			else
+			{
+				if(logicGates[maze[tempX][tempY]][i]==1)
 				{
-					shortestPath=min(shortestPath,swap);
+					swap = nextNull(snprintf(rout,sizeof(rout),i));//<-?
+					if(shortestPath=="")
+					{
+						shortestPath=swap;
+					}
+					else
+					{
+						shortestPath=min(shortestPath,swap);
+					}
 				}
 			}
 		}
 		return shortestPath;
 	}
 }
-
+void navigate()
+{
+	char * path = nextNull("");
+	for(int i = 0; i<strlen(path);i++)
+	{
+		rotate(900*path[i];
+		drive(trackSize);
+	}
+}
 task solveMaze()
 {
 		while(true)
