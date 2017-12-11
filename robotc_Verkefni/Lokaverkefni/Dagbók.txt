@@ -11,4 +11,4 @@ Dec 6: setLogicGate klárað, drive og rotate bætt í kóðann, Sigurður vann 
 og Elmar vann í closeAllDeadEnds sem breytir 3 dementional array og lokar leiðum sem leiða ekkert
 og svo var mergað, í enda dags var svo unnið í falli sem finnur næstu null values.
 
-Dec 11: Unnið ef meira í nextNull, gerðum flæðirit og klárðum kóðann. skiliðum link á Git á innu.
+Dec 11: Unnið ef meira í nextNull, gerðum flæðirit og klárðum kóðann. skiluðum link á Git á innu.
