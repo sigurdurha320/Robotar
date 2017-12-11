@@ -52,19 +52,18 @@ short sum(short pk)
 	}
 	return combined;
 }
-char * min(string kr, string sw)
+char * min(char * kr, char * sw)
 {
-	if(sizeof(kr)>sizeof(sw))
-	{
-		return kr;
-	}
-	else
+	if(sizeof(kr)>sizeof(sw)&&sizeof(sw)!="z")
 	{
 		return sw;
 	}
+	else
+	{
+		return kr;
+	}
 }
 
-short kek = sum(2);
 
 short maze[8][8];
 
@@ -127,7 +126,7 @@ run the string;*/
 	go back(to the open side
 	close the open gate in the logic gate
 */
-void rotate(int g)
+void rotate(int g)//a function to rotate to a * based on original orientation by using gyro
 {
 	//null stilla incoderana
 	SensorValue[IncoderR] = 0;
@@ -135,7 +134,7 @@ void rotate(int g)
   int right =0;
   int left =0;
   float slow = 1;
-  while(SensorValue[gyro]-g < 5)
+  while(SensorValue[gyro]-g < 5)//turn to untill there you are with in 0,5* from the state that you've been sendt to
   {
   	if(abs(SensorValue[IncoderR])>abs(SensorValue[IncoderL]))
   	{
@@ -190,7 +189,7 @@ void drive(int k)//distance in cm
 void setLogicGate()
 {
 	float values[4] = {0,0,0,0};
-	int i;
+	int i;//get the distance from all directions
 	for(i=0; i<4; i++){
 		rotate(900*i);
 		values[i] =	SensorValue(Sonar);
@@ -200,7 +199,7 @@ void setLogicGate()
 	short gate = 0;
 	if(values[0]>50)//if it's open "up"
 	{
-		gate=8
+		gate=8;
 	}
 	if(values[1]>50)//if it's open "right"
 	{
@@ -217,14 +216,53 @@ void setLogicGate()
 	maze[x][y]=gate;//(must keep track on x and y)
 }
 
+//a function that checks if you have fount the exit
+void finishLine()
+{
+	if(x==0&&logicGates[maze[x][y]][0]==1)//if you're at the top side and the top side of the logicgate is open
+	{
+		rotate(0);
+		drive(trackSize);
+		StopAllTasks();
+	}
+	else if(y==7&&logicGates[maze[x][y]][1]==1)//right side
+	{
+		rotate(900);
+		drive(trackSize);
+		StopAllTasks();
+	}
+	else if(x==7&&logicGates[maze[x][y]][2]==1)//bottom side
+	{
+		rotate(1800);
+		drive(trackSize);
+		StopAllTasks();
+	}
+	else if(y==0&&logicGates[maze[x][y]][3]==1)//left side
+	{
+		rotate(2700);
+		drive(trackSize);
+		StopAllTasks();
+	}
+
+}
+/*
+	this is a recursive function that checks the shortest patch to the next null value logicgate using brute force.
+	first: it tracks the path it has been given (virtualy moving the robot to that spot with out moving the robot it self).
+	second:checks if you've gon in a surcle
+	thrird: it calls it self with the next possible path (up,right,down or left)
+*/
 char * nextNull(char * rout)//"012103"
 {
+	string kek = rout;
 	int tempX=x;//x cord for instance
 	int tempY=y;//y cord for instance
 	string shortestPath="";
 	string swap ="";
+	int whereYouHaveBeen[sizeof(rout)][2];
 	for(int i =0;i<sizeof(rout);i++)//what's the current gate of the instance
 	{
+		whereYouHaveBeen[i][0]=tempX;
+		whereYouHaveBeen[i][1]=tempY;
 		if(rout[i]==0)
 		{
 			tempY-=1;
@@ -242,20 +280,28 @@ char * nextNull(char * rout)//"012103"
 			tempX-=1;
 		}
 	}
+	for(int i = 0;i<sizeof(rout);i++)
+	{
+		if(tempX==whereYouHaveBeen[i][0]&&tempY==whereYouHaveBeen[i][1])
+		{
+			return "z";//z = unvalid point;
+		}
+	}
 	if(maze[tempX][tempY]==NULL)
 	{
 		return rout;
 	}
 	else
 	{
-		int restrictor[4]={2,3,0,1};
-		for(int i = 0; i<4;i++)
+		if(sizeof(rout)>0)//need to watch out for the functions first run
 		{
-			if(sizeof(rout)>0)//need to watch out for the functions first run
+			int restrictor[4]={2,3,0,1};
+			for(int i = 0; i<4;i++)
 			{
 				if(logicGates[maze[tempX][tempY]][i]==1 && rout[strlen(rout)-1]!=restrictor[i])
 				{
-					swap = nextNull(snprintf(rout,sizeof(rout),i));//<-?
+					swap = nextNull(snprintf(kek,sizeof(kek),kek,i));//<-?
+					//swap = nextNull(snprintf(rout,sizeof(rout),rout,i));//<-?
 					if(shortestPath=="")
 					{
 						shortestPath=swap;
@@ -266,11 +312,15 @@ char * nextNull(char * rout)//"012103"
 					}
 				}
 			}
-			else
+		}
+		else//this is the first run
+		{
+			for(int i = 0; i<4;i++)
 			{
 				if(logicGates[maze[tempX][tempY]][i]==1)
 				{
-					swap = nextNull(snprintf(rout,sizeof(rout),i));//<-?
+					swap = nextNull(snprintf(kek,sizeof(kek),kek,i));//<-?
+					//swap = nextNull(snprintf(rout,sizeof(rout),rout,i));//<-?
 					if(shortestPath=="")
 					{
 						shortestPath=swap;
@@ -287,18 +337,19 @@ char * nextNull(char * rout)//"012103"
 }
 void navigate()
 {
-	char * path = nextNull("");
+	char * path = nextNull("");//gets a string(char array pointer) by calling function nextnull;
 	for(int i = 0; i<strlen(path);i++)
 	{
-		rotate(900*path[i];
+		rotate(900*path[i]);//rotate based on multiplyer
 		drive(trackSize);
 	}
 }
 task solveMaze()
 {
 		while(true)
-		{
+		{//the general sceama
 			setLogicGate();
+			finishLine();
 			navigate();
 		}
 }
@@ -310,24 +361,24 @@ task closeOffDeadEnds()
 		{
 			for(int yCord=0;yCord<sizeof(maze[0]);yCord++)
 			{
-				if(xCord!=x&&yCord!=y)
+				if(xCord!=x&&yCord!=y&&maze[xCord][yCord]!=NULL)
 				{
-					if(logicGates[maze[xCord][yCord]]==1)
+					if(maze[xCord][yCord]==1)
 					{
 						maze[xCord][yCord]=0;
 						maze[xCord-1][yCord]=	maze[xCord-1][yCord]-4;
 					}
-					else if(logicGates[maze[xCord][yCord]]==2)
+					else if(maze[xCord][yCord]==2)
 					{
 						maze[xCord][yCord]=0;
 						maze[xCord][yCord+1]=	maze[xCord][yCord+1]-8;
 					}
-					else if(logicGates[maze[xCord][yCord]]==4)
+					else if(maze[xCord][yCord]==4)
 					{
 						maze[xCord][yCord]=0;
 						maze[xCord+1][yCord]=	maze[xCord+1][yCord]-1;
 					}
-					else if (logicGates[maze[xCord][yCord]]==8)
+					else if(maze[xCord][yCord]==8)
 					{
 						maze[xCord][yCord]=0;
 						maze[xCord][yCord-1]=	maze[xCord-1][yCord]-2;
@@ -346,6 +397,7 @@ task main()
   wait1Msec(2000);
 
 	StartTask(solveMaze);
+	StartTask(closeOffDeadEnds);
 	while(vexRT[Btn8D]!=true&&Bumper!=true){}
 	StopAllTasks();
 }
