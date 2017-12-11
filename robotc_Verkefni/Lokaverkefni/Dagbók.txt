@@ -5,10 +5,10 @@ Nov 27: Byrjun á verkefni, við byrjuðum á að breyta rotate föllum í Wande
 Nov 29: Við gerðum 3 dementional array fyrir maze, Sigurður teiknaði upp þrautina og hugsuðum hvernig restin
 af kóðanum myndi fara fram.
 
-Dec 4: byrjum á ýmsum föllum, navigate og setLogicGate, útskýrigar bætt við í kóðann sem komment.
+Dec 4: byrjum á navigate og setLogicGate, útskýrigar bætt við í kóðann sem komment.
 
-Dec 6: setLogicGate fallið klárað og drive og rotate föllum bætt í kóðann, Sigurður vann í navigate fallinu
-og Elmar vann í closeAllDeadEnds fallinu sem lokar breytir 3 dementional array og lokar leiðum sem leiða ekkert
+Dec 6: setLogicGate klárað, drive og rotate bætt í kóðann, Sigurður vann í navigate
+og Elmar vann í closeAllDeadEnds sem breytir 3 dementional array og lokar leiðum sem leiða ekkert
 og svo var mergað, í enda dags var svo unnið í falli sem finnur næstu null values.
 
 Dec 11: Unnið ef meira í nextNull, gerðum flæðirit og klárðum kóðann. skiliðum link á Git á innu.
